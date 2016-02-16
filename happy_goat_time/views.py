@@ -54,5 +54,18 @@ class FanView(
     Change the owner of an org
     """
 
+    def get_fan_data(self):
+        return 'off'
+
+    def set_fan_speed_max(self, ):
+        return 100
+
     template_name = 'fans.jinja'
 
+    def get_context_data(self, **kwargs):
+        context = super(FanView, self).get_context_data(**kwargs)
+        context.update({
+            'get_fan_data': self.get_fan_data,
+            'set_fan_speed_max': self.set_fan_speed_max,
+        })
+        return context
