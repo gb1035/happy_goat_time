@@ -5,6 +5,8 @@ from django.views.generic import TemplateView, View
 from django.template import loader, RequestContext
 from django import http
 
+from .helpers import *
+
 # from .forms import AuthenticationForm
 
 
