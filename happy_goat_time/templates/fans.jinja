@@ -17,10 +17,15 @@
                 var x = document.getElementById('fan_data')
                 document.getElementById('fan_data').innerHTML="{{ set_fan_speed_max }}";
             }
+            function set_fan_speed_reg() {
+                var x = document.getElementById('fan_data')
+                document.getElementById('fan_data').innerHTML="{{ set_fan_speed_reg }}";
+            }
         </script>
     </header>
     <body>
         <button onclick="get_fan_data();">get fan speed</button><br/>
+        <button onclick="set_fan_speed_reg();">set fan speed reg</button><br/>
         <button onclick="set_fan_speed_max();">set fan speed max</button><br/>
         current fan speed: <span id='fan_data'>unknown</span>
     </body>

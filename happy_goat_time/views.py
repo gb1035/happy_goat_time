@@ -62,6 +62,9 @@ class FanView(
     def set_fan_speed_max(self, ):
         return 100
 
+    def set_fan_speed_reg(self, ):
+        return 10
+
     template_name = 'fans.jinja'
 
     def get_context_data(self, **kwargs):
@@ -69,5 +72,6 @@ class FanView(
         context.update({
             'get_fan_data': self.get_fan_data,
             'set_fan_speed_max': self.set_fan_speed_max,
+            'set_fan_speed_reg': self.set_fan_speed_reg,
         })
         return context
