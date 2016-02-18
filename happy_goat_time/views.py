@@ -60,9 +60,11 @@ class FanView(
         return 'off'
 
     def set_fan_speed_max(self, ):
+        setFanSpeed('1')
         return 100
 
     def set_fan_speed_reg(self, ):
+        setFanSpeed('2')
         return 10
 
     template_name = 'fans.jinja'
