@@ -1,7 +1,10 @@
 #Django
-Django==1.9.2
+Django==1.7.7
 # Templates
 jingo==0.7
+
+# Froms
+git+http://github.com/maraujop/django-crispy-forms.git@dev
 
 # Celery: Message queue
 celery==3.1.17
@@ -64,3 +67,9 @@ python-bcrypt
 
 django-ipware==1.1.0
 django-maintenancemode==0.11.2
+
+mechanize==0.2.5
+django-macaddress==1.3.2
+
+django-bootstrap3==3.3.0
+django-bootstrap3-datetimepicker==2.2.3

@@ -1,0 +1,125 @@
+{% extends "base.jinja" %}
+{% from "macros/navigation.jinja" import back_icon, pagination %}
+
+{% block org_page_label %}Machine Detail{% endblock %}
+
+{% block page_header %}
+	Current Nodes
+{% endblock %}
+
+
+{% block content %}
+
+<script>
+    // window.onload = function start() {
+    //     slide();
+    // }
+    // function slide() {
+    //     window.setInterval(function () {
+    //         document.getElementById('fan_data').innerHTML="{{ get_fan_data }}";
+    //     }, 3000); // repeat forever, polling every 3 seconds
+    // }
+    function get_fan_data() {
+        document.getElementById('fan_data').innerHTML="{{ get_fan_data() }}";
+    }
+    function set_fan_speed_max() {
+        var x = document.getElementById('fan_data')
+        document.getElementById('fan_data').innerHTML="{{ set_fan_speed_max() }}";
+    }
+    function set_fan_speed_reg() {
+        var x = document.getElementById('fan_data')
+        document.getElementById('fan_data').innerHTML="{{ set_fan_speed_reg() }}";
+    }
+</script>
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="panel {% block package_panel_classes %}panel-success{% endblock -%}">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                {% block package_panel_title %}
+                <i class="glyphicon glyphicon-saved"></i> Current Node Status
+                {% endblock %}
+                {% if is_paginated %}
+                <small class="text-uppercase pull-right">page {{page_obj.number}}</small>{% endif %}
+                </h3>
+            </div>
+            <div class="list-package-group list-group">
+                {% for node in nodes %}
+                    <a href="{{ node.get_dashboard_url() }}" class="list-group-item">
+                        <form action="{{ node.get_dashboard_url() }}" method="post" class="list-group-form">
+                            {{ csrf() }}
+                            {% block archive_button %}
+                            <button type="submit" class="close" data-toggle="tooltip" data-title="Archive" data-placement="right">
+                                <span aria-hidden="true">&times;</span>
+                                <span class="sr-only">Archive</span>
+                            </button>
+                            {% endblock %}
+                        </form>
+                        <h4 class="list-group-item-heading pull-left">
+                            {{ node.name }}
+                        </h4>
+                        <div class="list-group-item-text">
+                            <p>
+                                <strong>MAC:</strong> {{ node.mac_address}}
+                                <!-- <strong>Location:</strong> unknown -->
+                                <strong>Installed Date:</strong> {{ node.installed_date }}
+                            </p>
+                        </div>
+                    </a>
+                {% else %}
+                    <div class="list-group-item text-center">
+                        No nodes found
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {{ pagination(is_paginated, paginator, page_obj) }}
+        {% block bottom_link %}
+	        <div class="pull-right">
+                <a href="{{ url('nodes:dashboard') }}" class="btn btn-default">Configure Machine</a>
+           </div>
+           <div class="pull-left">
+                <button onclick="set_fan_speed_max" class="btn btn-default">Turn All Fans On</button>
+                <button onclick="set_fan_speed_reg" class="btn btn-default">Turn All Fans normal</button>
+	        </div>
+        {% endblock %}
+    </div>
+    <div class="col-sm-6">
+        <div class="well fla-info">
+            <h4>Device information:</h4>
+            <div class="row">
+                <div class="col-xs-6 col-sm-12 col-md-12 col-lg-6">
+                    <dl class="dl-horizontal dl-compressed">
+                    {% if status %}
+                        <dt>last seen:</dt>
+                        <dd>{{ (status.created|arrow).humanize() }}</dd>
+                        <dt>software:</dt>
+                        <dd>{{ status.software_version }}</dd>
+                    {% else %}
+                        <dt>last seen:</dt>
+                        <dd>never</dd>
+                        <dt>software:</dt>
+                        <dd>unknown</dd>
+                    {% endif %}
+                    </dl>
+                </div>
+                <div class="col-xs-6 col-sm-12 col-md-12 col-lg-6">
+                    <dl class="dl-horizontal dl-compressed">
+                        <dt>subscription:</dt>
+                        <dd>none</dd>
+                        <dt>GPS location:</dt>
+                        <dd>unknown</dd>
+                        <dt>GPS lat:</dt>
+                        <dd>123</dd>
+                        <dt>GPS lon:</dt>
+                        <dd>456</dd>
+                        <dt>IP location:</dt>
+                        <dd>123456</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

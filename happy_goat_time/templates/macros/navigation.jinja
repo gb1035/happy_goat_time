@@ -1,0 +1,31 @@
+{% macro back_icon(url, back_title=false) %}
+<a href="{{ url }}" class="label label-lg label-info label-back hidden-print" title="{{ back_title }}"><i class="glyphicon glyphicon-chevron-up"></i></a>
+{% endmacro %}
+
+{% macro pagination(is_paginated, paginator, page_obj) %}
+{% if is_paginated %}
+    <ul class="pagination">
+    {% if page_obj.has_previous() %}
+        <li><a href="?page={{ page_obj.previous_page_number() }}">&laquo;</a></li>
+    {% else %}
+        <li class="disabled"><a href="#" onclick="javascript: return false;">&laquo;</a></li>
+    {% endif %}
+    {% for page in paginator.page_range %}
+        {% if page %}
+            {% if page == page_obj.number %}
+        <li class="active"><a href="#" onclick="javascript: return false;">{{ page }}</a></li>
+            {% else %}
+        <li><a href="?page={{ page }}">{{ page }}</a></li>
+            {% endif %}
+        {% else %}
+        <li class="disabled"><a href="#" onclick="javascript: return false;">&hellip;</a></li>
+        {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next() %}
+        <li><a href="?page={{ page_obj.next_page_number() }}">&raquo;</a></li>
+    {% else %}
+        <li class="disabled"><a href="#" onclick="javascript: return false;">&raquo;</a></li>
+    {% endif %}
+    </ul>
+{% endif %}
+{% endmacro %}

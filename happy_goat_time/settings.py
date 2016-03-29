@@ -15,7 +15,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__) + "/")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -31,16 +31,44 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # 'nodes.apps.NodesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Third-party apps, patches, fixes
+    # 'crispy_forms',
+    'django_extensions',
+    'jingo',
+    'waffle',
+    # 'organizations',
+    'betterforms',
+    'eventlog',
+    # 'django_nose',
+    'django_object_actions',
+    'djangobower',
+    'django_select2',
+    'floppyforms',
+    'datetimewidget',
+    'hijack',
+    'compat',
+    'private_media',
+    # 'django-filter',
+
+    # local applications
+    'happy_goat_time',
+    'nodes',
+    'misc',
+    # 'old_organizations',
+    'bootstrap3_datetime',
+    'maintenancemode',
+    'bootstrap3',
 ]
 
 MIDDLEWARE_CLASSES = [
-    'django.middleware.security.SecurityMiddleware',
+    # 'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -48,25 +76,54 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'waffle.middleware.WaffleMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'maintenancemode.middleware.MaintenanceModeMiddleware',
 ]
 
 ROOT_URLCONF = 'happy_goat_time.urls'
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'happy_goat_time/templates')],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
+
+TEMPLATE_CONTEXT_PROCESSORS = [
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.media',
+    'django.core.context_processors.request',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.static',
+    'django.core.context_processors.csrf',
+    'django.core.context_processors.tz',
+    'django.contrib.messages.context_processors.messages',
 ]
+
+TEMPLATE_LOADERS = (
+    'jingo.Loader',
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
+
+
+# TEMPLATES = [
+#     {
+#         'BACKEND': 'django.template.backends.jinja2.Jinja2',
+#         'DIRS': [os.path.join(BASE_DIR, 'templates')],
+#         'APP_DIRS': True,
+#         'OPTIONS': {'environment': 'happy_goat_time.jinja2.Environment',}, 
+#     },
+#     {
+#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+#         'DIRS': [os.path.join(BASE_DIR, 'happy_goat_time/templates')],
+#         'APP_DIRS': True,
+#         'OPTIONS': {
+#             'context_processors': [
+#                 'django.template.context_processors.debug',
+#                 'django.template.context_processors.request',
+#                 'django.contrib.auth.context_processors.auth',
+#                 'django.contrib.messages.context_processors.messages',
+#             ],
+#         },
+#     },
+# ]
 
 WSGI_APPLICATION = 'happy_goat_time.wsgi.application'
 
@@ -119,3 +176,101 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+###
+# 3rd party app configuration
+###
+
+# jingo
+JINGO_INCLUDE_PATTERN = r'\.jinja'
+JINGO_EXCLUDE_APPS = (
+    'debug_toolbar',
+    'waffle',
+    'admin',
+    'registration',
+    'context_processors',
+)
+
+JINJA_CONFIG = {
+    'autoescape': True,
+    'extensions': [
+        'jinja2.ext.i18n',
+        'jinja2.ext.do',
+        'jinja2.ext.with_',
+        'jinja2.ext.loopcontrols',
+        # 'misc.jinja_cache.FragmentCacheExtension',
+    ],
+}
+
+
+# braces
+from django.core.urlresolvers import reverse_lazy
+LOGIN_URL = reverse_lazy('login')
+# no default endpoint for login redirect, handle in view
+LOGIN_REDIRECT_URL = None
+
+
+#crispy_forms
+# CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+
+# django messages framework customization
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-warning table-source-alert',
+    messages.INFO: 'alert-info table-source-alert',
+    messages.SUCCESS: 'alert-success table-source-alert',
+    messages.WARNING: 'alert-warning table-source-alert',
+    messages.ERROR: 'alert-danger table-source-alert'
+}
+
+
+# Waffle app
+WAFFLE_FLAG_DEFAULT = False
+WAFFLE_SWITCH_DEFAULT = False
+WAFFLE_SAMPLE_DEFAULT = False
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.7/howto/static-files/
+
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    # os.path.join(PROJECT_ROOT, 'static'),
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # 'djangobower.finders.BowerFinder',
+)
+
+# Absolute path to the directory static files should be collected to.
+# Don't put anything in this directory yourself; store your static files
+# in apps' "static/" subdirectories and in STATICFILES_DIRS.
+# Example: "/home/media/media.example.com/static/"
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
+STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
+MEDIA_URL = '/media/'
+
+PRIVATE_MEDIA_URL = '/private/'
+PRIVATE_MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'private')
+PRIVATE_MEDIA_SERVER = 'private_media.servers.DefaultServer'
+# PRIVATE_MEDIA_SERVER = 'private_media.servers.NginxXAccelRedirectServer'
+#PRIVATE_MEDIA_SERVER_OPTIONS = {'arg1': 1, ...}  # (optional) kwargs to init server
+
+# django-select2 settings
+
+SELECT2_BOOTSTRAP = True
+AUTO_RENDER_SELECT2_STATICS = False
+
+#######################################
+# extra settings
+#######################################
+
+MACADDRESS_DEFAULT_DIALECT = 'module.dialect_class'

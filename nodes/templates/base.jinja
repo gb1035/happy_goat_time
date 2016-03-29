@@ -1,0 +1,12 @@
+{% extends "_layouts/base.jinja" %}
+
+{% block header_title %}
+    {% block org_page_header %}
+    <h3 class="page-header">
+        TEST <small>{% block org_page_label %}{% endblock %}</small>
+    </h3>
+    {% endblock %}
+    {% block org_sub_header %}
+    <h4 class="page-sub-header">{% block page_header %}{% endblock %}</h4>
+    {% endblock %}
+{% endblock %}

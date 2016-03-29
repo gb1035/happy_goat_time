@@ -19,13 +19,14 @@ class Fake:
 class Fanmageddon(threading.Thread):
 
 	def __init__(self, ip, fanSpeed):
+		super(Fanmageddon, self).__init__()
 		self.address = ip
 		self.fanSpeed = fanSpeed
 
-	def run:
-		setFanSpeed(str(fanSpeed))
+	def run(self):
+		self.setFanSpeed(str(self.fanSpeed))
 
-	def setFanSpeed(fanSpeed):
+	def setFanSpeed(self, fanSpeed):
 
 	    # loop through the ips of the servers 
 	    # maybe we can make the ips modifyable later
