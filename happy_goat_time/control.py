@@ -228,12 +228,14 @@ if __name__ == '__main__':
 
 def changeFanSpeed(ips, level):
 	for ip in ips:
-		if level == 0:
+		if level == 1:
+			# Max speed
 			maxFan = True
 			x = Fanmageddon(ip)
 			fanSpeed = 1
 			x.start()
-		elif level == 1:
+		elif level == 0:
+			# Reg speed
 			maxFan = True
 			x = Fanmageddon(ip)
 			fanSpeed = 2
