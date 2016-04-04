@@ -46,7 +46,7 @@
             </div>
             <div class="list-package-group list-group">
                 {% for node in nodes %}
-                    <a href="{{ node.get_details_url() }}" class="list-group-item">
+                    <a href="{{ node.get_dashboard_url() }}" class="list-group-item">
                         <form action="{{ node.get_dashboard_url() }}" method="post" class="list-group-form">
                             {{ csrf() }}
                             {% block archive_button %}
@@ -91,10 +91,17 @@
             <div class="row">
                 <div class="col-xs-6 col-sm-12 col-md-12 col-lg-6">
                     <dl class="dl-horizontal dl-compressed">
+                    {% if status %}
+                        <dt>last seen:</dt>
+                        <dd>{{ (status.created|arrow).humanize() }}</dd>
+                        <dt>software:</dt>
+                        <dd>{{ status.software_version }}</dd>
+                    {% else %}
                         <dt>last seen:</dt>
                         <dd>never</dd>
                         <dt>software:</dt>
                         <dd>unknown</dd>
+                    {% endif %}
                     </dl>
                 </div>
                 <div class="col-xs-6 col-sm-12 col-md-12 col-lg-6">

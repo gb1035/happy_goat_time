@@ -4,7 +4,7 @@
 {% block org_page_label %}Machine Detail{% endblock %}
 
 {% block page_header %}
-	Current Nodes
+	{{node.name}}
 {% endblock %}
 
 
@@ -34,6 +34,35 @@
 
 <div class="row">
     <div class="col-sm-6">
+        <div class="well fla-info">
+            <h4>Device information:</h4>
+            <div class="row">
+                <div class="col-xs-6 col-sm-12 col-md-12 col-lg-6">
+                    <dl class="dl-horizontal dl-compressed">
+                        <dt>created:</dt>
+                        <dd>{{ node.installed_date|arrow_format }}</dd>
+                        <dt>mac:</dt>
+                        <dd>{{ node.mac_address }}</dd>
+                    </dl>
+                </div>
+                <div class="col-xs-6 col-sm-12 col-md-12 col-lg-6">
+                    <dl class="dl-horizontal dl-compressed">
+                        <dt>subscription:</dt>
+                        <dd>none</dd>
+                        <dt>GPS location:</dt>
+                        <dd>unknown</dd>
+                        <dt>GPS lat:</dt>
+                        <dd>123</dd>
+                        <dt>GPS lon:</dt>
+                        <dd>456</dd>
+                        <dt>IP location:</dt>
+                        <dd>123456</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
         <div class="panel {% block package_panel_classes %}panel-success{% endblock -%}">
             <div class="panel-heading">
                 <h3 class="panel-title">
@@ -46,7 +75,7 @@
             </div>
             <div class="list-package-group list-group">
                 {% for node in nodes %}
-                    <a href="{{ node.get_details_url() }}" class="list-group-item">
+                    <a href="{{ node.get_dashboard_url() }}" class="list-group-item">
                         <form action="{{ node.get_dashboard_url() }}" method="post" class="list-group-form">
                             {{ csrf() }}
                             {% block archive_button %}
@@ -80,39 +109,10 @@
                 <a href="{{ url('nodes:dashboard') }}" class="btn btn-default">Configure Machine</a>
            </div>
            <div class="pull-left">
-                <button onclick="set_fan_speed_max" class="btn btn-default">Turn All Fans On</button>
-                <button onclick="set_fan_speed_reg" class="btn btn-default">Turn All Fans normal</button>
+                <button onclick="set_fan_speed_max" class="btn btn-default">Turn Fans On</button>
+                <button onclick="set_fan_speed_reg" class="btn btn-default">Turn Fans normal</button>
 	        </div>
         {% endblock %}
-    </div>
-    <div class="col-sm-6">
-        <div class="well fla-info">
-            <h4>Device information:</h4>
-            <div class="row">
-                <div class="col-xs-6 col-sm-12 col-md-12 col-lg-6">
-                    <dl class="dl-horizontal dl-compressed">
-                        <dt>last seen:</dt>
-                        <dd>never</dd>
-                        <dt>software:</dt>
-                        <dd>unknown</dd>
-                    </dl>
-                </div>
-                <div class="col-xs-6 col-sm-12 col-md-12 col-lg-6">
-                    <dl class="dl-horizontal dl-compressed">
-                        <dt>subscription:</dt>
-                        <dd>none</dd>
-                        <dt>GPS location:</dt>
-                        <dd>unknown</dd>
-                        <dt>GPS lat:</dt>
-                        <dd>123</dd>
-                        <dt>GPS lon:</dt>
-                        <dd>456</dd>
-                        <dt>IP location:</dt>
-                        <dd>123456</dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 {% endblock %}

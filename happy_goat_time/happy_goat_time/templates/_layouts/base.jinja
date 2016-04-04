@@ -1,0 +1,217 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <link rel="shortcut icon" type="image/png" href="{{ static('img/favicon.png') }}">
+    <meta charset="utf-8">
+
+    <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+             More info: h5bp.com/i/378 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>
+        {%- block page_title -%}
+            {{ _("Happy Goat Time") }}
+            {%- block page_title_indicator -%}
+                {{ _("Portal") }}
+            {%- endblock %}
+        {%- endblock -%}
+    </title>
+    <meta name="description" content="{% block meta_description %}{% endblock %}">
+    <meta name="author" content="{% block meta_author %}{% endblock %}">
+
+    <!-- Mobile viewport optimized: h5bp.com/viewport -->
+    <meta name="viewport" content="width=device-width">
+
+    {% block meta %}
+    {% endblock %}
+
+    <link rel="stylesheet" href="{{ static('bootstrap/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ static('bootstrap/css/bootstrap-theme.css') }}">
+    <!-- <link rel="stylesheet" href="{{ static('css/slate.css') }}"> -->
+    <link rel="stylesheet" href="{{ static('css/main.css') }}">
+    {{select2_css()}}
+    {% block css %}{% endblock %}
+    <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+
+    <!-- All JavaScript at the bottom, except this Modernizr build.
+             Modernizr enables HTML5 elements & feature detects for optimal performance.
+             Create your own custom Modernizr build: www.modernizr.com/download/ -->
+    <!-- <script src="{{ static('js/libs/modernizr-2.6.2-respond-1.1.0.min.js') }}"></script> -->
+    {# Refresh waffle flags in JS representation every 2 minutes #}
+    <script>{{ waffle.wafflejs() }}</script>
+    <script src="{{ static('jquery/dist/jquery.js') }}"></script>
+    <script src="{{ static('bootstrap/js/bootstrap.js') }}"></script>
+    {# <script src="{{ static('js/search_download_ajax.js')}}"></script> #}
+    {# <script src="{{ static('js/jquery.watermark.min.js')}}"></script> #}
+
+    {% block js %}
+    <script src="{{ static('js/main.js') }}"></script>
+    {# may move this only to forms that use it or use form.media if supported by select2 #}
+    {{ select2_js() }}
+    {% endblock js %}
+
+</head>
+<body class="{% block body_class %}generic{% endblock %}" {% block body_attributes %}{% endblock %}>
+{% block body %}
+    <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
+             chromium.org/developers/how-tos/chrome-frame-getting-started -->
+    <!--[if lt IE 7]>
+        <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+    <![endif]-->
+
+    {% block navbar %}
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">{{ _("Happy Goat Time Portal") }}</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    {# <li><a href="{{url('devices:browse')}}">{{ _("Browse FLAs") }}</a></li> #}
+                </ul>
+                {# <form action="{{ url('profile:update_default') }}" method="post"> #}
+                <form action="{{ url('nodes:dashboard') }}" method="post">
+                {{ csrf() }}
+                <ul class="nav navbar-nav navbar-right">
+                    {# {% if user.is_authenticated() %} #}
+                    {# {% set profile = user.profile %} #}
+                    <li>
+                        <a href="{{ url('nodes:dashboard') }}">Latest Report
+                        {# only shows new if the latest download is new, older unviewed downloads won't turn on badge #}
+                        {# {% if profile and profile.has_new_latest_download %}
+                            <span class="badge">new</span>
+                        {% endif %} #}
+                        </a>
+                    </li>
+                    <li><a href="{{ url('nodes:dashboard') }}">Dashboard</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="user-menu">
+                        {% if request.session.is_hijacked_user %}
+                        <span class="label label-danger">hijacked</span>
+                        {% endif %}
+                        {# {{ user.get_full_name() }} #}John Doe<b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="user-menu">
+                        {% if user.is_superuser or user.is_staff %}
+                            <li role="presentation" class="dropdown-header">Admin pages:</li>
+                            <li role="presentation" class="default-select-item">
+                                <a href="{{ url('nodes:dashboard') }}">Organization List</a>
+                            </li>
+                            <li>
+                                <a href="{{ url('admin:index') }}">Site admin</a>
+                            </li>
+                            <li role="presentation" class="divider"></li>
+                        {% endif %}
+                        <li role="presentation" class="default-select-item">
+                            <a href="{{ url('nodes:dashboard') }}">Update Profile</a>
+                        </li>
+                        {% macro default_select_nav(title='Groups', objects=None, type='group') %}
+                            {% if objects.exists() %}
+                                {% set type_key = "default_%s"|format(type) %}
+                                <li role="presentation" class="dropdown-header">{{title}}:</li>
+                                {% for object in objects %}
+                                <li role="presentation" class="default-select-item">
+                                    <a role="menuitem" tabindex="-1" href="{{ object.get_detail_url() }}">{{object}}</a>
+                                    {# only show default selector if we have more than one object #}
+                                    {# {% if loop.length > 1 %} #}
+                                        {# {% if object == profile|attr(type_key)%}
+                                        <span class="btn btn-link btn-xs default-select-current">
+                                            <i class="glyphicon glyphicon-check"></i>
+                                        </span>
+                                        {% else %}
+                                        <button type="submit" name="{{type_key}}" value="{{object.pk}}" class="btn btn-primary btn-xs default-select-btn" data-toggle="tooltip" data-title="Make {{object}} your default {{type}} when logging in." data-placement="left">
+                                            <i class="glyphicon glyphicon-check"></i>
+                                        </button>
+                                        {% endif %} #}
+                                    {# {% endif %} #}
+                                </li>
+                                {% endfor %}
+                            {% endif %}
+                        {% endmacro %}
+
+                        {# {% set owned_orgs = user.owned_organizations.all() %}
+                        {{ default_select_nav('Organizations', owned_orgs, type='org') }} #}
+                        {#
+                        {{ default_select_nav('Groups', user.groups_group.all(), type='group') }}
+                            <li><a href="{{ url('profile:settings') }}">{{ _("Operator Settings") }}</a></li>
+                        #}
+                            <li role="presentation" class="divider"></li>
+                            {# don't let user easily logout if they are hijacking someone#}
+                            {% if not request.session.is_hijacked_user %}
+                                <li><a href="{{ url('logout') }}">{{ _("Logout") }}</a></li>
+                            {% else %}
+                                <li><a href="{{ url('release_hijack') }}">Release hijacked user</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+
+                    {# user not authenticated #}
+                    {# {% else %}
+                    <li><a href="{{ url('login') }}">{{ _("Login") }}</a></li>
+                    {% endif %} #}
+                </ul>
+                </form>
+            </div><!--/.navbar-collapse -->
+        </div>
+    </nav>
+    {% endblock %}
+
+    {% block header %}
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+{% block header_title %}
+    <h3 class="page-header">{% block page_header %}Change <small>Me</small>{% endblock %}</h3>
+{% endblock %}
+                </div>
+            </div>
+        </div>
+    </header>
+    {% endblock %}
+
+    <div role="main">
+        <div class="container">
+            <div class="row">
+            {% if messages %}
+                <div class="col-md-12">
+                    {% for message in messages %}
+                    <div class="alert {{message.tags}} alert-dismissable">
+                        <button type="button" class="close" aria-hidden="true" data-dismiss="alert">&times;<span class="sr-only">Close</span></button>
+                        {{message}}
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+                <div class="{% block content_class %}col-lg-12{% endblock %}">
+{% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        {% block footer %}
+        <div class="container">
+            <hr>
+            <p>&copy; University of Tulsa {{now("Y")}}</p>
+        </div>
+        {% endblock footer %}
+    </footer>
+
+{# TODO: get DEBUG into context #}
+{# {% if not DEBUG %}
+{% include "ga_analytics.jinja" %}
+{% endif %} #}
+
+{% endblock %}
+</body>
+</html>

@@ -17,7 +17,3 @@ class Node(models.Model):
     @permalink
     def get_dashboard_url(self):
         return ('nodes:dashboard', (), self.url_arguments())
-
-    @permalink
-    def get_details_url(self):
-        return ('nodes:node_detail', (), {'node_pk': self.pk})

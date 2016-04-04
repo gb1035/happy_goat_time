@@ -12,7 +12,7 @@ import simplejson
 
 from datetime import datetime
 
-import arrow
+import arrow as arrow_module
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.conf import settings
 from django.db.models import Model
@@ -27,45 +27,6 @@ from django_select2.templatetags.django_select2_tags import import_js, import_cs
 import pytz
 
 import decimal
-
-
-@register.filter
-@jinja2.contextfilter
-def arrow_format(context, time, format_string=None):
-    if not time:
-        return None
-    arrow_time = arrow.get(time)
-    if isinstance(format, str):
-        returned_time = arrow_time.format(format_string)
-    else:
-        returned_time = arrow_time.format(getattr(settings, "NODE_TIME_FORMAT", 'ddd MMM DD YYYY H:mm:ss'))
-        # returned_time = arrow_time.format(settings.NODE_TIME_FORMAT)
-    # if include_timezone:
-    #     tz_lookup = None
-    #     if desired_tz:
-    #         if isinstance(desired_tz, unicode) or isinstance(desired_tz, str):
-    #             tz_lookup=desired_tz
-    #         else:
-    #             tz_lookup = desired_tz.zone
-    #     else:
-    #         tz_lookup = arrow_time.timetz().tzname()
-
-    #     tz_abbr = {
-    #         'US/Alaska': 'AKST',
-    #         'US/Arizona': 'MST',
-    #         'US/Central': 'CST',
-    #         'US/Eastern': 'EST',
-    #         'US/Hawaii': 'HST',
-    #         'US/Mountain': 'MST',
-    #         'US/Pacific': 'PST',
-    #     }
-    #     if tz_lookup and tz_abbr.get(tz_lookup, False):
-    #         returned_time += " {}".format(tz_abbr.get(tz_lookup))
-    #     else:
-    #         # Add numerical timezone offset
-    #         returned_time += " {}".format(arrow_time.format(settings.FLA_TIMEZONE_FALLBACK))
-    return returned_time
-
 
 @register.function
 def chart_header_js():
@@ -91,11 +52,11 @@ def now(format_string):
     return date(timezone.now(), format_string)
 
 
-# @register.filter
-# @jinja2.contextfilter
-# def arrow(context, time):
-#     arrow_time, desired_tz = arrow_context(context, time)
-#     return arrow_time
+@register.filter
+@jinja2.contextfilter
+def arrow(context, time):
+    arrow_time, desired_tz = arrow_context(context, time)
+    return arrow_time
 
 
 @register.function
@@ -210,7 +171,6 @@ def setFanSpeed(fanSpeed):
         # Follow the redirect to the main page
         # may not be entirely necessary
         x = Fake()
-        print ip
         x.absolute_url = "http://" + ip + "/cgi/url_redirect.cgi?url_name=mainmenu"
 
         br.follow_link(x)
